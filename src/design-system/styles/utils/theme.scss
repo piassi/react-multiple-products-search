@@ -1,0 +1,41 @@
+@use '../settings/spacings';
+@use '../settings/colors';
+@use '../settings/border-radius';
+@use '../settings/font-sizes';
+
+@forward '../settings/colors';
+@forward '../settings/sizes';
+@forward '../settings/font';
+
+@function color($color-name) {
+  @return map-get(colors.$colors, $color-name);
+}
+
+@mixin background-variants($prefix) {
+  @each $name, $color in colors.$colors {
+    &.#{$prefix}-#{$name} {
+      background-color: $color;
+      border-color: $color;
+    }
+  }
+}
+
+@mixin text-color-variants($prefix) {
+  @each $name, $color in colors.$colors {
+    &.#{$prefix}-#{$name} {
+      color: $color;
+    }
+  }
+}
+
+@function spacing($size) {
+  @return map-get(spacings.$spacings, $size);
+}
+
+@function border-radius($size) {
+  @return map-get(border-radius.$border-radius, $size);
+}
+
+@function font-size($size) {
+  @return map-get(font-sizes.$font-sizes, $size);
+}

@@ -1,0 +1,9 @@
+@use 'theme' as *;
+@import './reset.scss';
+
+body {
+  font-family: $primary-font-family;
+  font-size: font-size($md);
+  background-color: color($white);
+  color: color($dark-gray);
+}

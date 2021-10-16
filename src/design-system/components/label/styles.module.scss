@@ -1,0 +1,6 @@
+@use 'theme' as *;
+
+.label {
+  margin-bottom: spacing($sm);
+  display: block;
+}

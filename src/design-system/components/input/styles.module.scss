@@ -1,0 +1,25 @@
+@use 'theme' as *;
+
+.input {
+  margin-bottom: spacing($md);
+  width: 100%;
+
+  .inputTag {
+    font-family: $primary-font-family;
+    font-size: font-size($md);
+    background-color: color($white);
+    padding: spacing($md);
+    border: solid 2px color($accent);
+    transition: all 0.25s;
+    width: 100%;
+    max-width: none;
+
+    &:focus,
+    &:active,
+    &:focus-visible {
+      box-shadow: none;
+      outline: none;
+      border-color: color($primary);
+    }
+  }
+}

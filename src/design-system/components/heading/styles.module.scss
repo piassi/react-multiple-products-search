@@ -1,0 +1,8 @@
+@use 'theme' as *;
+
+.heading {
+  margin-bottom: spacing($xl);
+  font-weight: 400;
+
+  @include text-color-variants('heading');
+}

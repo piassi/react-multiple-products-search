@@ -1,0 +1,7 @@
+@use 'theme' as *;
+
+.div {
+  margin-bottom: spacing($xl);
+  padding: spacing($md);
+  border: solid 1px color($light-gray);
+}

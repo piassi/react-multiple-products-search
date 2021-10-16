@@ -1,0 +1,23 @@
+@use 'theme' as *;
+
+.container {
+  padding: spacing($xl);
+  max-width: 990px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: center;
+}
+
+.form {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+}
+
+.searchInput {
+  width: 100%;
+  margin-right: spacing($xs);
+}

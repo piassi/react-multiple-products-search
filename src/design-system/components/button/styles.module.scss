@@ -1,0 +1,13 @@
+@use 'theme' as *;
+
+.button {
+  font-family: $primary-font-family;
+  font-size: font-size($md);
+  background-color: color($dark-gray);
+  border: solid 2px color($dark-gray);
+  color: color($white);
+  padding: spacing($md);
+  cursor: pointer;
+
+  @include background-variants('button');
+}
