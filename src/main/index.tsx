@@ -1,13 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { mock } from 'jest-mock-extended';
 import '@/design-system/styles/common.scss';
-import { ProductsPage } from '@/products/presentation/products-page/products-page';
-import { ProductsSearch } from '@/products/domain/use-cases/products-search';
+import { makeProductsPage } from './factories/products/presentation/make-products-page';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <ProductsPage productsSearch={mock<ProductsSearch>()} />
-  </React.StrictMode>,
+  <React.StrictMode>{makeProductsPage()}</React.StrictMode>,
   document.getElementById('root')
 );

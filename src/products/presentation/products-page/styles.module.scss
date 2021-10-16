@@ -6,13 +6,13 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
   justify-content: center;
 }
 
 .form {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: center;
   width: 100%;
 }
@@ -20,4 +20,8 @@
 .searchInput {
   width: 100%;
   margin-right: spacing($xs);
+
+  & > div {
+    margin-bottom: 0;
+  }
 }

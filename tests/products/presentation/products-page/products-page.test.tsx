@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import user from '@testing-library/user-event';
 import { mock } from 'jest-mock-extended';
 import faker from 'faker';
@@ -14,15 +14,17 @@ import {
 describe('Given products page', () => {
   const mockProductsSearchResponse: Product[] = [
     mock<Product>({
+      id: faker.datatype.uuid(),
       name: faker.random.words(),
     }),
     mock<Product>({
+      id: faker.datatype.uuid(),
       name: faker.random.words(),
     }),
   ];
   const mockProductsSearch = mock<ProductsSearch>();
 
-  function renderSut() {
+  function renderSut(): void {
     render(<ProductsPage productsSearch={mockProductsSearch} />);
   }
 
@@ -35,17 +37,34 @@ describe('Given products page', () => {
   describe('When user use search form', () => {
     const mockSearchedValue = faker.random.words();
 
-    beforeEach(() => {
+    function doUserSearch(): void {
       renderSut();
 
       user.type(screen.getByLabelText(SEARCH_INPUT_LABEL), mockSearchedValue);
       user.click(screen.getByRole('button', { name: SEARCH_BUTTON_LABEL }));
+    }
+
+    test('Then it should call SearchProducts w/ searched value', async () => {
+      doUserSearch();
+
+      await waitFor(() => {
+        expect(mockProductsSearch.execute).toHaveBeenCalledWith(
+          mockSearchedValue
+        );
+      });
     });
 
-    test('Then it should call SearchProducts w/ searched value', () => {
-      expect(mockProductsSearch.execute).toHaveBeenCalledWith(
-        mockSearchedValue
-      );
+    test('Then it should list products', async () => {
+      doUserSearch();
+
+      await waitFor(() => {
+        expect(
+          screen.queryByText(mockProductsSearchResponse[0].name)
+        ).toBeInTheDocument();
+        expect(
+          screen.queryByText(mockProductsSearchResponse[1].name)
+        ).toBeInTheDocument();
+      });
     });
   });
 });
