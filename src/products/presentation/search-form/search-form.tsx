@@ -33,44 +33,48 @@ export function SearchForm(props: Props): JSX.Element {
   } = props;
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className={classNames(styles.form, hasProducts && styles.hasProducts)}
+    <div
+      className={classNames(
+        styles.container,
+        hasProducts && styles.hasProducts
+      )}
     >
-      <div className={classNames(styles.formColumn, styles.searchFormColumn)}>
-        <Input
-          value={searchFormData.search}
-          onChange={(e) => updateSerchFormData('search', e.target.value)}
-          id={SEARCH_INPUT_ID}
-          label={SEARCH_INPUT_LABEL}
-          placeholder={SEARCH_INPUT_PLACEHOLDER}
-          required
-        />
-      </div>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <div className={classNames(styles.formColumn, styles.searchFormColumn)}>
+          <Input
+            value={searchFormData.search}
+            onChange={(e) => updateSerchFormData('search', e.target.value)}
+            id={SEARCH_INPUT_ID}
+            label={SEARCH_INPUT_LABEL}
+            placeholder={SEARCH_INPUT_PLACEHOLDER}
+            required
+          />
+        </div>
 
-      <div className={styles.formColumn}>
-        <Input
-          value={searchFormData.minPrice}
-          onChange={(e) => updateSerchFormData('minPrice', e.target.value)}
-          id={MIN_PRICE_INPUT_ID}
-          label={MIN_PRICE_INPUT_LABEL}
-          type="number"
-        />
-      </div>
+        <div className={styles.formColumn}>
+          <Input
+            value={searchFormData.minPrice}
+            onChange={(e) => updateSerchFormData('minPrice', e.target.value)}
+            id={MIN_PRICE_INPUT_ID}
+            label={MIN_PRICE_INPUT_LABEL}
+            type="number"
+          />
+        </div>
 
-      <div className={styles.formColumn}>
-        <Input
-          value={searchFormData.maxPrice}
-          onChange={(e) => updateSerchFormData('maxPrice', e.target.value)}
-          id={MAX_PRICE_INPUT_ID}
-          label={MAX_PRICE_INPUT_LABEL}
-          type="number"
-        />
-      </div>
+        <div className={styles.formColumn}>
+          <Input
+            value={searchFormData.maxPrice}
+            onChange={(e) => updateSerchFormData('maxPrice', e.target.value)}
+            id={MAX_PRICE_INPUT_ID}
+            label={MAX_PRICE_INPUT_LABEL}
+            type="number"
+          />
+        </div>
 
-      <Button disabled={isLoading} variant={Colors.primary}>
-        {SEARCH_BUTTON_LABEL}
-      </Button>
-    </form>
+        <Button disabled={isLoading} variant={Colors.primary}>
+          {SEARCH_BUTTON_LABEL}
+        </Button>
+      </form>
+    </div>
   );
 }

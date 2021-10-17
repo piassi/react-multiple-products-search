@@ -1,5 +1,7 @@
 @use 'theme' as *;
 
+$search-form-height: 136px;
+
 .container {
   padding: spacing($xl);
   max-width: 990px;
@@ -8,6 +10,12 @@
   flex-direction: column;
   min-height: 100vh;
   justify-content: center;
+}
+
+.hasProducts {
+  @include desktop-breakpoint {
+    padding-top: $search-form-height;
+  }
 }
 
 .form {
@@ -30,10 +38,6 @@
       width: 20%;
     }
   }
-}
-
-.hasProducts {
-  background: blue;
 }
 
 .formColumn {

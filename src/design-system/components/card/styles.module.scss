@@ -8,6 +8,8 @@ $card-padding: spacing($md);
   border: solid 1px color($light-gray);
   width: 100%;
   min-height: 100%;
+  background: color($white);
+  box-shadow: 2px 2px color($lighter-gray);
 }
 
 .image {

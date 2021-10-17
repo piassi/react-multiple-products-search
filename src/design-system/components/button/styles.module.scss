@@ -8,6 +8,7 @@
   color: color($white);
   padding: spacing($md);
   cursor: pointer;
+  border-radius: spacing($xs);
 
   &:disabled {
     background-color: color($light-gray);

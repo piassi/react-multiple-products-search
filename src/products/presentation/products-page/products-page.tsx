@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Heading } from '@/design-system/components';
-import { Colors } from '@/design-system/types/colors';
 import { ProductsSearch } from '@/products/domain/use-cases/products-search';
 import styles from './styles.module.scss';
 import { Product } from '@/products/domain/models/product';
 import { ProductsList } from '../products-list';
 import { SearchForm } from '../search-form';
+import classNames from 'classnames';
 
 type Props = {
   productsSearch: ProductsSearch;
@@ -50,9 +49,12 @@ export function ProductsPage(props: Props): JSX.Element {
   }
 
   return (
-    <div className={styles.container}>
-      <Heading variant={Colors.darkGray}>Ebay Search</Heading>
-
+    <div
+      className={classNames(
+        styles.container,
+        products.length && styles.hasProducts
+      )}
+    >
       <SearchForm
         isLoading={isLoading}
         hasProducts={Boolean(products.length)}

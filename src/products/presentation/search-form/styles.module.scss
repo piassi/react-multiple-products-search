@@ -1,12 +1,31 @@
 @use 'theme' as *;
 
+.container {
+  width: 100%;
+  display: flex;
+
+  @include desktop-breakpoint {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 136px;
+    margin-top: calc(-136px / 2);
+    justify-content: center;
+    transition: all 0.25s ease-in-out;
+  }
+}
+
 .form {
   display: flex;
   align-items: flex-end;
-  justify-content: center;
+  max-width: 990px;
   width: 100%;
   flex-wrap: wrap;
-  transition: all 2s ease-in-out;
+  transition: all 0.25s ease-in-out;
+  background: color($white);
+  padding: spacing($xxl);
+  box-shadow: 2px 2px color($light-gray);
+  border-radius: spacing($sm);
 
   @include desktop-breakpoint {
     flex-wrap: nowrap;
@@ -41,5 +60,17 @@
 
   @include desktop-breakpoint {
     width: 80%;
+  }
+}
+
+.hasProducts {
+  margin-top: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+
+  .form {
+    max-width: 100%;
+    border-radius: 0;
   }
 }
