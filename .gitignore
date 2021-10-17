@@ -1,6 +1,5 @@
 node_modules
 .vscode
 coverage
-public/js
-dist
+public
 .eslintcache
