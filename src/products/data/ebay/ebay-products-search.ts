@@ -37,16 +37,7 @@ export class EbayProductsSearch implements ProductsSearch {
   constructor(private readonly httpPostClient: EbayFindApiPostClient) {}
 
   findByKeywordBody(searchArgs: ProductsSearchArgs): string {
-    const { search, minPrice } = searchArgs;
-
-    // const body = {
-    //   findItemsByKeywordsRequest: {
-    //     '@xmlns': 'http://www.ebay.com/marketplace/search/v1/services',
-    //     keywords: {
-    //       '#text': search,
-    //     },
-    //   },
-    // };
+    const { search, minPrice, maxPrice } = searchArgs;
 
     const body = xmlbuilder
       .create('findItemsByKeywordsRequest', {
@@ -62,6 +53,14 @@ export class EbayProductsSearch implements ProductsSearch {
         .element('itemFilter')
         .element('name', 'MinPrice')
         .insertAfter('value', minPrice);
+    }
+
+    if (maxPrice) {
+      body
+        .root()
+        .element('itemFilter')
+        .element('name', 'MaxPrice')
+        .insertAfter('value', maxPrice);
     }
 
     return body.end({ pretty: true });

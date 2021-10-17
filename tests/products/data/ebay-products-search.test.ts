@@ -98,4 +98,27 @@ describe('Ebay Products Search', () => {
       });
     });
   });
+
+  describe('Given max price is provided', () => {
+    test('Then it should send maxPrice filter on req body', async () => {
+      const sut = new EbayProductsSearch(mockHttpPostClient);
+
+      const mockSearch = faker.random.words();
+      const mockMaxPrice = '100';
+
+      await sut.execute({ search: mockSearch, maxPrice: mockMaxPrice });
+
+      expect(mockHttpPostClient.post).toHaveBeenCalledWith({
+        url: ebayEndpoints.findByKeyword,
+        body: `<?xml version="1.0" encoding="UTF-8"?>
+<findItemsByKeywordsRequest xmlns="http://www.ebay.com/marketplace/search/v1/services">
+  <keywords>${mockSearch}</keywords>
+  <itemFilter>
+    <name>MaxPrice</name>
+    <value>${mockMaxPrice}</value>
+  </itemFilter>
+</findItemsByKeywordsRequest>`,
+      });
+    });
+  });
 });

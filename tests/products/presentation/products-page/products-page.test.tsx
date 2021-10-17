@@ -7,6 +7,7 @@ import { ProductsPage } from '@/products/presentation/products-page';
 import { ProductsSearch } from '@/products/domain/use-cases/products-search';
 import { Product } from '@/products/domain/models/product';
 import {
+  MAX_PRICE_INPUT_LABEL,
   MIN_PRICE_INPUT_LABEL,
   SEARCH_BUTTON_LABEL,
   SEARCH_INPUT_LABEL,
@@ -56,6 +57,7 @@ describe('Given products page', () => {
         expect(mockProductsSearch.execute).toHaveBeenCalledWith({
           search: mockSearchedValue,
           minPrice: '',
+          maxPrice: '',
         });
       });
     });
@@ -87,6 +89,27 @@ describe('Given products page', () => {
           expect(mockProductsSearch.execute).toHaveBeenCalledWith({
             search: mockSearchedValue,
             minPrice: mockMinPrice,
+            maxPrice: '',
+          });
+        });
+      });
+    });
+
+    describe('Given user has provided maximum price', () => {
+      test('Then search products should be called with maximum price', async () => {
+        renderSut();
+
+        const mockMaxPrice = '100';
+
+        user.type(screen.getByLabelText(SEARCH_INPUT_LABEL), mockSearchedValue);
+        user.type(screen.getByLabelText(MAX_PRICE_INPUT_LABEL), mockMaxPrice);
+        user.click(screen.getByRole('button', { name: SEARCH_BUTTON_LABEL }));
+
+        await waitFor(() => {
+          expect(mockProductsSearch.execute).toHaveBeenCalledWith({
+            search: mockSearchedValue,
+            minPrice: '',
+            maxPrice: mockMaxPrice,
           });
         });
       });

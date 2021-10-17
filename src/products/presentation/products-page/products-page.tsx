@@ -32,7 +32,11 @@ export function ProductsPage(props: Props): JSX.Element {
   async function handleSubmit(e: React.FormEvent): Promise<void> {
     e.preventDefault();
     setIsLoading(true);
-    const newProducts = await productsSearch.execute({ search, minPrice });
+    const newProducts = await productsSearch.execute({
+      search,
+      minPrice,
+      maxPrice,
+    });
     setProducts(newProducts);
     setIsLoading(false);
   }
