@@ -16,7 +16,7 @@ import { SearchFormData } from '../products-page/products-page';
 import { Colors } from '@/design-system/types/colors';
 
 type Props = {
-  hasProducts: boolean;
+  stickToTop: boolean;
   isLoading: boolean;
   handleSubmit: (e: React.FormEvent) => Promise<void>;
   searchFormData: SearchFormData;
@@ -26,7 +26,7 @@ type Props = {
 export function SearchForm(props: Props): JSX.Element {
   const {
     handleSubmit,
-    hasProducts,
+    stickToTop,
     isLoading,
     searchFormData,
     updateSerchFormData,
@@ -34,10 +34,7 @@ export function SearchForm(props: Props): JSX.Element {
 
   return (
     <div
-      className={classNames(
-        styles.container,
-        hasProducts && styles.hasProducts
-      )}
+      className={classNames(styles.container, stickToTop && styles.stickToTop)}
     >
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={classNames(styles.formColumn, styles.searchFormColumn)}>

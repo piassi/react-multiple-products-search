@@ -9,10 +9,15 @@ $search-form-height: 136px;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  justify-content: center;
+  justify-content: space-evenly;
+  align-items: center;
+
+  @include desktop-breakpoint {
+    align-items: center;
+  }
 }
 
-.hasProducts {
+.withPadding {
   @include desktop-breakpoint {
     padding-top: $search-form-height;
   }

@@ -5,6 +5,7 @@ import { Product } from '@/products/domain/models/product';
 import { ProductsList } from '../products-list';
 import { SearchForm } from '../search-form';
 import classNames from 'classnames';
+import { LoadingIndicator } from '@/design-system/components/loading-indicator';
 
 type Props = {
   productsSearch: ProductsSearch;
@@ -52,18 +53,18 @@ export function ProductsPage(props: Props): JSX.Element {
     <div
       className={classNames(
         styles.container,
-        products.length && styles.hasProducts
+        (products.length || isLoading) && styles.withPadding
       )}
     >
       <SearchForm
         isLoading={isLoading}
-        hasProducts={Boolean(products.length)}
+        stickToTop={Boolean(products.length || isLoading)}
         handleSubmit={handleSubmit}
         searchFormData={searchFormData}
         updateSerchFormData={updateSerchFormData}
       />
 
-      <ProductsList products={products} />
+      {isLoading ? <LoadingIndicator /> : <ProductsList products={products} />}
     </div>
   );
 }
