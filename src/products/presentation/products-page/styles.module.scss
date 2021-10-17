@@ -16,6 +16,8 @@
   justify-content: center;
   width: 100%;
   flex-wrap: wrap;
+  background: red;
+  transition: all 2s ease-in-out;
 
   @include desktop-breakpoint {
     flex-wrap: nowrap;
@@ -28,6 +30,10 @@
       width: 20%;
     }
   }
+}
+
+.hasProducts {
+  background: blue;
 }
 
 .formColumn {

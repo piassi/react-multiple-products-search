@@ -11,7 +11,7 @@ import {
   MIN_PRICE_INPUT_LABEL,
   SEARCH_BUTTON_LABEL,
   SEARCH_INPUT_LABEL,
-} from '@/products/presentation/products-page/constants';
+} from '@/products/presentation/search-form/constants';
 
 describe('Given products page', () => {
   const mockProductsSearchResponse: Product[] = [
