@@ -15,13 +15,40 @@
   align-items: flex-end;
   justify-content: center;
   width: 100%;
+  flex-wrap: wrap;
+
+  @include desktop-breakpoint {
+    flex-wrap: nowrap;
+  }
+
+  button {
+    width: 100%;
+
+    @include desktop-breakpoint {
+      width: 20%;
+    }
+  }
 }
 
-.searchInput {
-  width: 100%;
-  margin-right: spacing($xs);
+.formColumn {
+  width: 50%;
+  padding-right: spacing($xs);
+  padding-bottom: spacing($md);
+
+  @include desktop-breakpoint {
+    width: 20%;
+    padding-bottom: 0;
+  }
 
   & > div {
     margin-bottom: 0;
+  }
+}
+
+.searchFormColumn {
+  width: 100%;
+
+  @include desktop-breakpoint {
+    width: 80%;
   }
 }

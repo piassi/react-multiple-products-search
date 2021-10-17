@@ -18,16 +18,21 @@ describe('Ebay Products Search', () => {
     });
   });
 
+  afterEach(jest.clearAllMocks);
+
   test('Should call HttpPostClient with correct arguments', async () => {
     const sut = new EbayProductsSearch(mockHttpPostClient);
 
     const mockSearch = faker.random.words();
 
-    await sut.execute(mockSearch);
+    await sut.execute({ search: mockSearch });
 
     expect(mockHttpPostClient.post).toHaveBeenCalledWith({
       url: ebayEndpoints.findByKeyword,
-      body: `<?xml version="1.0" encoding="UTF-8"?><findItemsByKeywordsRequest xmlns="http://www.ebay.com/marketplace/search/v1/services"><keywords>${mockSearch}</keywords></findItemsByKeywordsRequest>`,
+      body: `<?xml version="1.0" encoding="UTF-8"?>
+<findItemsByKeywordsRequest xmlns="http://www.ebay.com/marketplace/search/v1/services">
+  <keywords>${mockSearch}</keywords>
+</findItemsByKeywordsRequest>`,
     });
   });
 
@@ -36,7 +41,7 @@ describe('Ebay Products Search', () => {
     const { findItemsByKeywordsResponse } = findItemsByKeywordsRequestStub;
     const mockItems = findItemsByKeywordsResponse[0].searchResult[0].item;
 
-    const response = await sut.execute(`mockSearch`);
+    const response = await sut.execute({ search: 'mockSearch' });
 
     const priceFormatter = new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -69,5 +74,28 @@ describe('Ebay Products Search', () => {
         imageURL: mockItems[2].galleryURL[0],
       },
     ]);
+  });
+
+  describe('Given min price is provided', () => {
+    test('Then it should send minPrice filter on req body', async () => {
+      const sut = new EbayProductsSearch(mockHttpPostClient);
+
+      const mockSearch = faker.random.words();
+      const mockMinPrice = '50';
+
+      await sut.execute({ search: mockSearch, minPrice: mockMinPrice });
+
+      expect(mockHttpPostClient.post).toHaveBeenCalledWith({
+        url: ebayEndpoints.findByKeyword,
+        body: `<?xml version="1.0" encoding="UTF-8"?>
+<findItemsByKeywordsRequest xmlns="http://www.ebay.com/marketplace/search/v1/services">
+  <keywords>${mockSearch}</keywords>
+  <itemFilter>
+    <name>MinPrice</name>
+    <value>${mockMinPrice}</value>
+  </itemFilter>
+</findItemsByKeywordsRequest>`,
+      });
+    });
   });
 });

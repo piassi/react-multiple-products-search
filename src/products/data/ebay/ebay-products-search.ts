@@ -1,4 +1,7 @@
-import { ProductsSearch } from '../../domain/use-cases/products-search';
+import {
+  ProductsSearch,
+  ProductsSearchArgs,
+} from '../../domain/use-cases/products-search';
 import { Product } from '../../domain/models/product';
 import { HttpPostClient } from '@/data/http';
 import { ebayEndpoints } from './endpoints';
@@ -33,23 +36,41 @@ export type EbayFindApiPostClient = HttpPostClient<string, EbayFindApiResponse>;
 export class EbayProductsSearch implements ProductsSearch {
   constructor(private readonly httpPostClient: EbayFindApiPostClient) {}
 
-  findByKeywordBody(search: string): string {
-    const body = {
-      findItemsByKeywordsRequest: {
-        '@xmlns': 'http://www.ebay.com/marketplace/search/v1/services',
-        keywords: {
-          '#text': search,
-        },
-      },
-    };
+  findByKeywordBody(searchArgs: ProductsSearchArgs): string {
+    const { search, minPrice } = searchArgs;
 
-    return xmlbuilder.create(body, { version: '1.0', encoding: 'UTF-8' }).end();
+    // const body = {
+    //   findItemsByKeywordsRequest: {
+    //     '@xmlns': 'http://www.ebay.com/marketplace/search/v1/services',
+    //     keywords: {
+    //       '#text': search,
+    //     },
+    //   },
+    // };
+
+    const body = xmlbuilder
+      .create('findItemsByKeywordsRequest', {
+        encoding: 'UTF-8',
+        version: '1.0',
+      })
+      .attribute('xmlns', 'http://www.ebay.com/marketplace/search/v1/services')
+      .element('keywords', search);
+
+    if (minPrice) {
+      body
+        .root()
+        .element('itemFilter')
+        .element('name', 'MinPrice')
+        .insertAfter('value', minPrice);
+    }
+
+    return body.end({ pretty: true });
   }
 
-  async execute(search: string): Promise<Product[]> {
+  async execute(searchArgs: ProductsSearchArgs): Promise<Product[]> {
     const response = await this.httpPostClient.post({
       url: ebayEndpoints.findByKeyword,
-      body: this.findByKeywordBody(search),
+      body: this.findByKeywordBody(searchArgs),
     });
 
     const ebayProducts =

@@ -7,6 +7,7 @@ import { ProductsPage } from '@/products/presentation/products-page';
 import { ProductsSearch } from '@/products/domain/use-cases/products-search';
 import { Product } from '@/products/domain/models/product';
 import {
+  MIN_PRICE_INPUT_LABEL,
   SEARCH_BUTTON_LABEL,
   SEARCH_INPUT_LABEL,
 } from '@/products/presentation/products-page/constants';
@@ -52,9 +53,10 @@ describe('Given products page', () => {
       doUserSearch();
 
       await waitFor(() => {
-        expect(mockProductsSearch.execute).toHaveBeenCalledWith(
-          mockSearchedValue
-        );
+        expect(mockProductsSearch.execute).toHaveBeenCalledWith({
+          search: mockSearchedValue,
+          minPrice: '',
+        });
       });
     });
 
@@ -68,6 +70,25 @@ describe('Given products page', () => {
         expect(
           screen.queryByText(mockProductsSearchResponse[1].name)
         ).toBeInTheDocument();
+      });
+    });
+
+    describe('Given user has provided minimum price', () => {
+      test('Then search products should be called with minimum price', async () => {
+        renderSut();
+
+        const mockMinPrice = '50';
+
+        user.type(screen.getByLabelText(SEARCH_INPUT_LABEL), mockSearchedValue);
+        user.type(screen.getByLabelText(MIN_PRICE_INPUT_LABEL), mockMinPrice);
+        user.click(screen.getByRole('button', { name: SEARCH_BUTTON_LABEL }));
+
+        await waitFor(() => {
+          expect(mockProductsSearch.execute).toHaveBeenCalledWith({
+            search: mockSearchedValue,
+            minPrice: mockMinPrice,
+          });
+        });
       });
     });
   });
