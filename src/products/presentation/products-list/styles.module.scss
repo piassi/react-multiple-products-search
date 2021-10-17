@@ -1,0 +1,29 @@
+@use 'theme' as *;
+
+.container {
+  flex-wrap: wrap;
+  display: flex;
+  margin: 0 spacing($md) * -1;
+  padding: spacing($md) 0;
+}
+
+.productCard {
+  width: 50%;
+  padding: spacing($md);
+
+  @include desktop-breakpoint {
+    width: 25%;
+  }
+
+  h3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .price {
+    text-align: right;
+  }
+}

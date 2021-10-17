@@ -9,5 +9,9 @@
   padding: spacing($md);
   cursor: pointer;
 
+  &:disabled {
+    background-color: color($light-gray);
+  }
+
   @include background-variants('button');
 }

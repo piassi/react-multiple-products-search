@@ -2,6 +2,8 @@
 @use '../settings/colors';
 @use '../settings/border-radius';
 @use '../settings/font-sizes';
+@use '../settings/breakpoints';
+@use '../settings/sizes';
 
 @forward '../settings/colors';
 @forward '../settings/sizes';
@@ -16,6 +18,12 @@
     &.#{$prefix}-#{$name} {
       background-color: $color;
       border-color: $color;
+
+      &:disabled {
+        background-color: lighten($color, 20);
+        border-color: lighten($color, 10);
+        cursor: not-allowed;
+      }
     }
   }
 }
@@ -38,4 +46,14 @@
 
 @function font-size($size) {
   @return map-get(font-sizes.$font-sizes, $size);
+}
+
+@function breakpoint($size) {
+  @return map-get(breakpoints.$breakpoints, $size);
+}
+
+@mixin desktop-breakpoint {
+  @media (min-width: breakpoint(sizes.$md)) {
+    @content;
+  }
 }

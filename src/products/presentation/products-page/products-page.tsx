@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import { Button, Heading, Input } from '@/design-system/components';
+import { Button, Heading, Input } from '@/design-system/components';
 import { Colors } from '@/design-system/types/colors';
 import { ProductsSearch } from '@/products/domain/use-cases/products-search';
 import styles from './styles.module.scss';
@@ -9,11 +9,8 @@ import {
   SEARCH_INPUT_LABEL,
   SEARCH_INPUT_PLACEHOLDER,
 } from './constants';
-import { Heading } from '@/design-system/components/heading';
-import { Button } from '@/design-system/components/button';
-import { Input } from '@/design-system/components/input';
 import { Product } from '@/products/domain/models/product';
-import { Card } from '@/design-system/components/card';
+import { ProductsList } from '../products-list';
 
 type Props = {
   productsSearch: ProductsSearch;
@@ -22,13 +19,15 @@ type Props = {
 export function ProductsPage(props: Props): JSX.Element {
   const { productsSearch } = props;
   const [search, setSearch] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
 
   async function handleSubmit(e: React.FormEvent): Promise<void> {
     e.preventDefault();
-
+    setIsLoading(true);
     const newProducts = await productsSearch.execute(search);
     setProducts(newProducts);
+    setIsLoading(false);
   }
 
   return (
@@ -43,14 +42,16 @@ export function ProductsPage(props: Props): JSX.Element {
             id={SEARCH_INPUT_ID}
             label={SEARCH_INPUT_LABEL}
             placeholder={SEARCH_INPUT_PLACEHOLDER}
+            required
           />
         </div>
-        <Button variant={Colors.primary}>{SEARCH_BUTTON_LABEL}</Button>
+
+        <Button disabled={isLoading} variant={Colors.primary}>
+          {SEARCH_BUTTON_LABEL}
+        </Button>
       </form>
 
-      {products.map((product) => (
-        <Card key={product.id} title={product.name} />
-      ))}
+      <ProductsList products={products} />
     </div>
   );
 }

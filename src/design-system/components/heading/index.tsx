@@ -5,14 +5,18 @@ import styles from './styles.module.scss';
 
 type HeadingCustomProps = {
   variant?: Colors;
+  tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 };
 
 type Props = HTMLAttributes<HTMLHeadingElement> & HeadingCustomProps;
 
 export function Heading(props: Props): React.ReactElement {
-  const { children, variant } = props;
+  const { children, variant, tag = 'h1' } = props;
+
+  const HeadingTag = tag;
+
   return (
-    <h1
+    <HeadingTag
       className={classNames(
         styles.heading,
         variant && styles[`heading-${variant}`]
@@ -20,6 +24,6 @@ export function Heading(props: Props): React.ReactElement {
       {...props}
     >
       {children}
-    </h1>
+    </HeadingTag>
   );
 }

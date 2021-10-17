@@ -7,6 +7,7 @@ import xmlbuilder from 'xmlbuilder';
 type EbayFindApiResponseItem = {
   itemId: string[];
   title: string[];
+  galleryURL: string[];
   sellingStatus: Array<{
     currentPrice: Array<{
       '@currencyId': string;
@@ -54,10 +55,18 @@ export class EbayProductsSearch implements ProductsSearch {
     const ebayProducts =
       response.body.findItemsByKeywordsResponse[0].searchResult[0].item;
 
+    const priceFormatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+
     return ebayProducts.map((ebayProduct) => ({
       id: ebayProduct.itemId[0],
       name: ebayProduct.title[0],
-      price: ebayProduct.sellingStatus[0].currentPrice[0].__value__,
+      price: priceFormatter.format(
+        parseInt(ebayProduct.sellingStatus[0].currentPrice[0].__value__)
+      ),
+      imageURL: ebayProduct?.galleryURL[0],
     }));
   }
 }

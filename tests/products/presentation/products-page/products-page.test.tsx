@@ -16,10 +16,14 @@ describe('Given products page', () => {
     mock<Product>({
       id: faker.datatype.uuid(),
       name: faker.random.words(),
+      price: '',
+      imageURL: '',
     }),
     mock<Product>({
       id: faker.datatype.uuid(),
       name: faker.random.words(),
+      price: '',
+      imageURL: '',
     }),
   ];
   const mockProductsSearch = mock<ProductsSearch>();

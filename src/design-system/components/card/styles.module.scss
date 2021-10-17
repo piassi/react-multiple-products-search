@@ -1,7 +1,35 @@
 @use 'theme' as *;
 
-.div {
+$card-padding: spacing($md);
+
+.card {
   margin-bottom: spacing($xl);
-  padding: spacing($md);
+  padding: $card-padding;
   border: solid 1px color($light-gray);
+  width: 100%;
+  min-height: 100%;
+}
+
+.image {
+  background-color: color($light-gray);
+  height: 110px;
+  padding: spacing($md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: $card-padding * -1;
+  margin-left: $card-padding * -1;
+  margin-right: $card-padding * -1;
+  margin-bottom: $card-padding;
+
+  > img,
+  > svg {
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  > svg {
+    fill: none;
+  }
 }

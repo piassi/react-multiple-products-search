@@ -38,21 +38,35 @@ describe('Ebay Products Search', () => {
 
     const response = await sut.execute(`mockSearch`);
 
+    const priceFormatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+
     expect(response).toEqual([
       {
         id: mockItems[0].itemId[0],
         name: mockItems[0].title[0],
-        price: mockItems[0].sellingStatus[0].currentPrice[0].__value__,
+        price: priceFormatter.format(
+          parseInt(mockItems[0].sellingStatus[0].currentPrice[0].__value__)
+        ),
+        imageURL: mockItems[0].galleryURL[0],
       },
       {
         id: mockItems[1].itemId[0],
         name: mockItems[1].title[0],
-        price: mockItems[1].sellingStatus[0].currentPrice[0].__value__,
+        price: priceFormatter.format(
+          parseInt(mockItems[1].sellingStatus[0].currentPrice[0].__value__)
+        ),
+        imageURL: mockItems[1].galleryURL[0],
       },
       {
         id: mockItems[2].itemId[0],
         name: mockItems[2].title[0],
-        price: mockItems[2].sellingStatus[0].currentPrice[0].__value__,
+        price: priceFormatter.format(
+          parseInt(mockItems[2].sellingStatus[0].currentPrice[0].__value__)
+        ),
+        imageURL: mockItems[2].galleryURL[0],
       },
     ]);
   });
