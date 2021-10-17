@@ -9,7 +9,8 @@
     "test:watch": "npm test -- --watch",
     "test:stagged": "npm test -- --findRelatedTests",
     "test:ci": "npm test -- --coverage",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build": "webpack --config webpack.prod.js"
   },
   "keywords": [],
   "author": "",
