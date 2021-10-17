@@ -1,5 +1,5 @@
-import { ProductsSearch } from '../domain/use-cases/products-search';
-import { Product } from '../domain/models/product';
+import { ProductsSearch } from '../../domain/use-cases/products-search';
+import { Product } from '../../domain/models/product';
 import { HttpPostClient } from '@/data/http';
 import { ebayEndpoints } from './endpoints';
 import xmlbuilder from 'xmlbuilder';

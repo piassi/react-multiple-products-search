@@ -2,9 +2,9 @@ import { mock } from 'jest-mock-extended';
 import {
   EbayFindApiPostClient,
   EbayProductsSearch,
-} from '@/products/data/ebay-products-search';
+} from '@/products/data/ebay/ebay-products-search';
 import faker from 'faker';
-import { ebayEndpoints } from '@/products/data/endpoints';
+import { ebayEndpoints } from '@/products/data/ebay/endpoints';
 import { HttpStatusCodes } from '@/data/http';
 import { findItemsByKeywordsRequestStub } from './ebay-keyword-response-stub';
 
