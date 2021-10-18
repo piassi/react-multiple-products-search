@@ -14,6 +14,14 @@ import {
 } from '@/products/presentation/search-form/constants';
 import { NoProductsFoundError } from '@/products/domain/errors/no-products-found';
 import { GENERIC_ERROR_MESSAGE } from '@/products/presentation/products-page/constants';
+import { useProductsSearchOrchestrator } from '@/products/presentation/hooks/use-products-search-orchestrator';
+import { SaveSearch } from '@/products/domain/use-cases/save-search';
+
+jest.mock('@/products/presentation/hooks/use-products-search-orchestrator');
+
+const mockRunProductsSearch = jest.fn();
+const mockUseProductsSearchOrchestrator =
+  useProductsSearchOrchestrator as jest.Mock;
 
 describe('Given products page', () => {
   const mockProductsSearchResponse: Product[] = [
@@ -30,14 +38,21 @@ describe('Given products page', () => {
       imageURL: '',
     }),
   ];
-  const mockProductsSearch = mock<ProductsSearch>();
 
   function renderSut(): void {
-    render(<ProductsPage productsSearch={mockProductsSearch} />);
+    render(
+      <ProductsPage
+        saveSearch={mock<SaveSearch>()}
+        productsSearch={[mock<ProductsSearch>()]}
+      />
+    );
   }
 
   beforeEach(() => {
-    mockProductsSearch.execute.mockResolvedValue(mockProductsSearchResponse);
+    mockUseProductsSearchOrchestrator.mockReturnValue({
+      products: mockProductsSearchResponse,
+      runProductsSearch: mockRunProductsSearch,
+    });
   });
 
   afterEach(jest.clearAllMocks);
@@ -56,7 +71,7 @@ describe('Given products page', () => {
       doUserSearch();
 
       await waitFor(() => {
-        expect(mockProductsSearch.execute).toHaveBeenCalledWith({
+        expect(mockRunProductsSearch).toHaveBeenCalledWith({
           search: mockSearchedValue,
           minPrice: '',
           maxPrice: '',
@@ -90,7 +105,7 @@ describe('Given products page', () => {
         user.click(screen.getByRole('button', { name: SEARCH_BUTTON_LABEL }));
 
         await waitFor(() => {
-          expect(mockProductsSearch.execute).toHaveBeenCalledWith({
+          expect(mockRunProductsSearch).toHaveBeenCalledWith({
             search: mockSearchedValue,
             minPrice: mockMinPrice,
             maxPrice: '',
@@ -110,7 +125,7 @@ describe('Given products page', () => {
         user.click(screen.getByRole('button', { name: SEARCH_BUTTON_LABEL }));
 
         await waitFor(() => {
-          expect(mockProductsSearch.execute).toHaveBeenCalledWith({
+          expect(mockRunProductsSearch).toHaveBeenCalledWith({
             search: mockSearchedValue,
             minPrice: '',
             maxPrice: mockMaxPrice,
@@ -121,9 +136,9 @@ describe('Given products page', () => {
 
     describe('Given search has no results', () => {
       beforeEach(() => {
-        mockProductsSearch.execute.mockRejectedValueOnce(
-          new NoProductsFoundError()
-        );
+        mockRunProductsSearch.mockImplementation(() => {
+          throw new NoProductsFoundError();
+        });
       });
 
       test('Then "No search results" message should be displayed', async () => {
@@ -142,9 +157,9 @@ describe('Given products page', () => {
 
     describe('Given search fails unexpectedly', () => {
       beforeEach(() => {
-        mockProductsSearch.execute.mockRejectedValueOnce(
-          new Error('Not Expected')
-        );
+        mockRunProductsSearch.mockImplementation(() => {
+          throw new Error('Not Expected');
+        });
       });
 
       test('Then generic error message should be displayed', async () => {

@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { ProductsSearch } from '@/products/domain/use-cases/products-search';
 import styles from './styles.module.scss';
-import { Product } from '@/products/domain/models/product';
 import { ProductsList } from '../products-list';
 import { SearchForm } from '../search-form';
 import classNames from 'classnames';
 import { LoadingIndicator } from '@/design-system/components/loading-indicator';
 import { NoProductsFoundError } from '@/products/domain/errors/no-products-found';
 import { GENERIC_ERROR_MESSAGE } from './constants';
+import { useProductsSearchOrchestrator } from '../hooks/use-products-search-orchestrator';
+import { SaveSearch } from '@/products/domain/use-cases/save-search';
 
 type Props = {
-  productsSearch: ProductsSearch;
+  saveSearch: SaveSearch;
+  productsSearch: ProductsSearch[];
 };
 
 export type SearchFormData = {
@@ -20,15 +22,15 @@ export type SearchFormData = {
 };
 
 export function ProductsPage(props: Props): JSX.Element {
-  const { productsSearch } = props;
+  const { productsSearch, saveSearch } = props;
+  const { runProductsSearch, products, isLoading } =
+    useProductsSearchOrchestrator(saveSearch, productsSearch);
   const [searchFormData, setSearchFormData] = useState<SearchFormData>({
     search: '',
     minPrice: '',
     maxPrice: '',
   });
-  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [products, setProducts] = useState<Product[]>([]);
 
   function updateSerchFormData(key: keyof SearchFormData, value: string): void {
     setSearchFormData({
@@ -41,25 +43,20 @@ export function ProductsPage(props: Props): JSX.Element {
     try {
       e.preventDefault();
       setErrorMessage('');
-      setIsLoading(true);
-      setProducts([]);
 
       const { search, minPrice, maxPrice } = searchFormData;
 
-      const newProducts = await productsSearch.execute({
+      runProductsSearch({
         search,
         minPrice,
         maxPrice,
       });
-      setProducts(newProducts);
     } catch (error) {
       if (error instanceof NoProductsFoundError) {
         setErrorMessage(NoProductsFoundError.message);
       } else {
         setErrorMessage(GENERIC_ERROR_MESSAGE);
       }
-    } finally {
-      setIsLoading(false);
     }
   }
 
