@@ -6,6 +6,7 @@ import { Product } from '../../domain/models/product';
 import { HttpPostClient } from '@/data/http';
 import { ebayEndpoints } from './endpoints';
 import xmlbuilder from 'xmlbuilder';
+import { NoProductsFoundError } from '@/products/domain/errors/no-products-found';
 
 type EbayFindApiResponseItem = {
   itemId: string[];
@@ -21,12 +22,9 @@ type EbayFindApiResponseItem = {
 
 type EbayFindApiResponse = {
   findItemsByKeywordsResponse: Array<{
-    ack: string[];
-    version: string[];
-    timestamp: string[];
     searchResult: Array<{
       '@count': string;
-      item: EbayFindApiResponseItem[];
+      item?: EbayFindApiResponseItem[];
     }>;
   }>;
 };
@@ -72,8 +70,14 @@ export class EbayProductsSearch implements ProductsSearch {
       body: this.findByKeywordBody(searchArgs),
     });
 
-    const ebayProducts =
-      response.body.findItemsByKeywordsResponse[0].searchResult[0].item;
+    const ebayResponse =
+      response.body.findItemsByKeywordsResponse[0].searchResult[0];
+
+    if (parseInt(ebayResponse['@count']) <= 0) {
+      throw new NoProductsFoundError();
+    }
+
+    const ebayProducts = ebayResponse.item;
 
     const priceFormatter = new Intl.NumberFormat('en-US', {
       style: 'currency',

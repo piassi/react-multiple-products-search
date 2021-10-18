@@ -12,6 +12,8 @@ import {
   SEARCH_BUTTON_LABEL,
   SEARCH_INPUT_LABEL,
 } from '@/products/presentation/search-form/constants';
+import { NoProductsFoundError } from '@/products/domain/errors/no-products-found';
+import { GENERIC_ERROR_MESSAGE } from '@/products/presentation/products-page/constants';
 
 describe('Given products page', () => {
   const mockProductsSearchResponse: Product[] = [
@@ -62,16 +64,18 @@ describe('Given products page', () => {
       });
     });
 
-    test('Then it should list products', async () => {
-      doUserSearch();
+    describe('Given products were found', () => {
+      test('Then it should list products', async () => {
+        doUserSearch();
 
-      await waitFor(() => {
-        expect(
-          screen.queryByText(mockProductsSearchResponse[0].name)
-        ).toBeInTheDocument();
-        expect(
-          screen.queryByText(mockProductsSearchResponse[1].name)
-        ).toBeInTheDocument();
+        await waitFor(() => {
+          expect(
+            screen.queryByText(mockProductsSearchResponse[0].name)
+          ).toBeInTheDocument();
+          expect(
+            screen.queryByText(mockProductsSearchResponse[1].name)
+          ).toBeInTheDocument();
+        });
       });
     });
 
@@ -111,6 +115,46 @@ describe('Given products page', () => {
             minPrice: '',
             maxPrice: mockMaxPrice,
           });
+        });
+      });
+    });
+
+    describe('Given search has no results', () => {
+      beforeEach(() => {
+        mockProductsSearch.execute.mockRejectedValueOnce(
+          new NoProductsFoundError()
+        );
+      });
+
+      test('Then "No search results" message should be displayed', async () => {
+        renderSut();
+
+        user.type(screen.getByLabelText(SEARCH_INPUT_LABEL), mockSearchedValue);
+        user.click(screen.getByRole('button', { name: SEARCH_BUTTON_LABEL }));
+
+        await waitFor(() => {
+          expect(
+            screen.getByText(NoProductsFoundError.message)
+          ).toBeInTheDocument();
+        });
+      });
+    });
+
+    describe('Given search fails unexpectedly', () => {
+      beforeEach(() => {
+        mockProductsSearch.execute.mockRejectedValueOnce(
+          new Error('Not Expected')
+        );
+      });
+
+      test('Then generic error message should be displayed', async () => {
+        renderSut();
+
+        user.type(screen.getByLabelText(SEARCH_INPUT_LABEL), mockSearchedValue);
+        user.click(screen.getByRole('button', { name: SEARCH_BUTTON_LABEL }));
+
+        await waitFor(() => {
+          expect(screen.getByText(GENERIC_ERROR_MESSAGE)).toBeInTheDocument();
         });
       });
     });

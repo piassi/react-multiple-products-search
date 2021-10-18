@@ -6,6 +6,8 @@ import { ProductsList } from '../products-list';
 import { SearchForm } from '../search-form';
 import classNames from 'classnames';
 import { LoadingIndicator } from '@/design-system/components/loading-indicator';
+import { NoProductsFoundError } from '@/products/domain/errors/no-products-found';
+import { GENERIC_ERROR_MESSAGE } from './constants';
 
 type Props = {
   productsSearch: ProductsSearch;
@@ -25,6 +27,7 @@ export function ProductsPage(props: Props): JSX.Element {
     maxPrice: '',
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [products, setProducts] = useState<Product[]>([]);
 
   function updateSerchFormData(key: keyof SearchFormData, value: string): void {
@@ -35,36 +38,61 @@ export function ProductsPage(props: Props): JSX.Element {
   }
 
   async function handleSubmit(e: React.FormEvent): Promise<void> {
-    e.preventDefault();
-    setIsLoading(true);
+    try {
+      e.preventDefault();
+      setErrorMessage('');
+      setIsLoading(true);
+      setProducts([]);
 
-    const { search, minPrice, maxPrice } = searchFormData;
+      const { search, minPrice, maxPrice } = searchFormData;
 
-    const newProducts = await productsSearch.execute({
-      search,
-      minPrice,
-      maxPrice,
-    });
-    setProducts(newProducts);
-    setIsLoading(false);
+      const newProducts = await productsSearch.execute({
+        search,
+        minPrice,
+        maxPrice,
+      });
+      setProducts(newProducts);
+    } catch (error) {
+      if (error instanceof NoProductsFoundError) {
+        setErrorMessage(NoProductsFoundError.message);
+      } else {
+        setErrorMessage(GENERIC_ERROR_MESSAGE);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }
+
+  const hasProducts = Boolean(products.length);
+  const shouldStickSearchToTop = Boolean(
+    hasProducts || isLoading || errorMessage
+  );
 
   return (
     <div
       className={classNames(
         styles.container,
-        (products.length || isLoading) && styles.withPadding
+        shouldStickSearchToTop && styles.withPadding
       )}
     >
       <SearchForm
         isLoading={isLoading}
-        stickToTop={Boolean(products.length || isLoading)}
+        stickToTop={shouldStickSearchToTop}
         handleSubmit={handleSubmit}
         searchFormData={searchFormData}
         updateSerchFormData={updateSerchFormData}
       />
 
-      {isLoading ? <LoadingIndicator /> : <ProductsList products={products} />}
+      <div
+        className={classNames(
+          styles.pageContent,
+          hasProducts && styles.pageContentWithProducts
+        )}
+      >
+        {errorMessage && <div>{errorMessage}</div>}
+        {isLoading && <LoadingIndicator />}
+        {hasProducts && <ProductsList products={products} />}
+      </div>
     </div>
   );
 }

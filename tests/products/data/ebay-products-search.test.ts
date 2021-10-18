@@ -7,6 +7,7 @@ import faker from 'faker';
 import { ebayEndpoints } from '@/products/data/ebay/endpoints';
 import { HttpStatusCodes } from '@/data/http';
 import { findItemsByKeywordsRequestStub } from './ebay-keyword-response-stub';
+import { NoProductsFoundError } from '@/products/domain/errors/no-products-found';
 
 describe('Ebay Products Search', () => {
   const mockHttpPostClient = mock<EbayFindApiPostClient>();
@@ -119,6 +120,36 @@ describe('Ebay Products Search', () => {
   </itemFilter>
 </findItemsByKeywordsRequest>`,
       });
+    });
+  });
+
+  describe('Given search returned no products', () => {
+    beforeEach(() => {
+      mockHttpPostClient.post.mockResolvedValue({
+        statusCode: HttpStatusCodes.success,
+        body: {
+          findItemsByKeywordsResponse: [
+            {
+              searchResult: [
+                {
+                  '@count': '0',
+                  item: [],
+                },
+              ],
+            },
+          ],
+        },
+      });
+    });
+
+    test('Then it should throw NoProductsFoundError', async () => {
+      const sut = new EbayProductsSearch(mockHttpPostClient);
+
+      const result = sut.execute({
+        search: 'mockSearch',
+      });
+
+      await expect(result).rejects.toThrowError(NoProductsFoundError);
     });
   });
 });
