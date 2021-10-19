@@ -13,11 +13,26 @@ export class LocalProductsSearch implements ProductsSearch {
     productsToFilter: Product[],
     searchArgs: ProductsSearchArgs
   ): Product[] {
-    const { search } = searchArgs;
+    const { search, minPrice, maxPrice } = searchArgs;
 
-    return productsToFilter.filter((p) =>
-      p.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
-    );
+    return productsToFilter.filter((p) => {
+      const nameMatches = p.name
+        .toLocaleLowerCase()
+        .includes(search.toLocaleLowerCase());
+
+      let hasMinPrice = true;
+      let hasMaxPrice = true;
+
+      if (minPrice) {
+        hasMinPrice = parseInt(p.price) >= parseInt(minPrice);
+      }
+
+      if (maxPrice) {
+        hasMaxPrice = parseInt(p.price) <= parseInt(maxPrice);
+      }
+
+      return nameMatches && hasMinPrice && hasMaxPrice;
+    });
   }
 
   async execute(searchArgs: ProductsSearchArgs): Promise<Product[]> {
