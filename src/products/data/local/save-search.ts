@@ -11,7 +11,7 @@ export class LocalSaveSearch implements SaveSearch {
 
   async execute(searchResults: Product[]): Promise<void> {
     const currentProducts =
-      this.localLoadesource.load<Product[]>(LOCAL_SEARCH_KEY);
+      this.localLoadesource.load<Product[]>(LOCAL_SEARCH_KEY) || [];
 
     this.localSaveResource.save(LOCAL_SEARCH_KEY, [
       ...currentProducts,

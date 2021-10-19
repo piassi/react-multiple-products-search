@@ -37,6 +37,11 @@ export class LocalProductsSource implements ProductsSource {
 
   async search(searchArgs: ProductsSearchArgs): Promise<Product[]> {
     const products = this.localLoadResource.load<Product[]>(LOCAL_SEARCH_KEY);
+
+    if (!products?.length) {
+      return [];
+    }
+
     return await Promise.resolve(this.filterProducts(products, searchArgs));
   }
 }
