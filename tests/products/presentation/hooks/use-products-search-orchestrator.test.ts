@@ -135,5 +135,29 @@ describe('Given Products Search Orchestrator', () => {
         });
       });
     });
+
+    describe('Given one product source fails', () => {
+      const mockErrorMessage = 'mockErrorMessage';
+
+      beforeEach(() => {
+        mockProductsSources[1].search.mockRejectedValue(
+          new Error(mockErrorMessage)
+        );
+      });
+
+      test('Then it should set error message', async () => {
+        const { result } = renderHook(() =>
+          useProductsSearchOrchestrator(mockSaveSearch, mockProductsSources)
+        );
+
+        act(() => {
+          result.current.runProductsSearch(mockSearchArgs);
+        });
+
+        await waitFor(() => {
+          expect(result.current.errorMessage).toEqual(mockErrorMessage);
+        });
+      });
+    });
   });
 });

@@ -52,7 +52,7 @@ export function useProductsSearchOrchestrator(
         setHasSearchFinished(true);
         setIsLoading(false);
       })
-      .catch((e) => console.error(e));
+      .catch((error) => setErrorMessage(error.message));
   }
 
   function runProductsSearch(searchArgs: ProductsSearchArgs): void {
