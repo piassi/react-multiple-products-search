@@ -1,3 +1,4 @@
+import { NoProductsFoundError } from '@/products/domain/errors/no-products-found';
 import { Product } from '@/products/domain/models/product';
 import {
   ProductsSearch,
@@ -5,17 +6,20 @@ import {
 } from '@/products/domain/use-cases/products-search';
 import { SaveSearch } from '@/products/domain/use-cases/save-search';
 import { useState } from 'react';
+import { GENERIC_ERROR_MESSAGE } from '../products-page/constants';
 
 type ProductsSearchOrchestratorResult = {
   products: Product[];
   runProductsSearch: (searchArgs: ProductsSearchArgs) => void;
   isLoading: boolean;
+  errorMessage: string;
 };
 
 export function useProductsSearchOrchestrator(
   saveSearch: SaveSearch,
   productsSources: ProductsSearch[]
 ): ProductsSearchOrchestratorResult {
+  const [errorMessage, setErrorMessage] = useState('');
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearchFinished, setHasSearchFinished] = useState(false);
@@ -42,19 +46,17 @@ export function useProductsSearchOrchestrator(
     return uniqueProducts;
   }
 
-  function onFirstSourceFinish(productsSourcesPromises: unknown[]): void {
-    Promise.race(productsSourcesPromises)
-      .then(() => setIsLoading(false))
-      .catch((e) => console.error(e));
-  }
-
   function onAllSourcesFinish(productsSourcesPromises: unknown[]): void {
     Promise.all(productsSourcesPromises)
-      .then(() => setHasSearchFinished(true))
+      .then(() => {
+        setHasSearchFinished(true);
+        setIsLoading(false);
+      })
       .catch((e) => console.error(e));
   }
 
   function runProductsSearch(searchArgs: ProductsSearchArgs): void {
+    setErrorMessage('');
     setHasSearchFinished(false);
     setIsLoading(true);
     setProducts([]);
@@ -71,10 +73,17 @@ export function useProductsSearchOrchestrator(
             removeDuplicatedProducts(currentProducts, newProducts)
           )
         )
-        .catch((e) => console.error(e));
+        .catch((error) => {
+          if (error instanceof NoProductsFoundError) {
+            setErrorMessage(NoProductsFoundError.message);
+          } else {
+            setErrorMessage(GENERIC_ERROR_MESSAGE);
+          }
+          setIsLoading(false);
+          setHasSearchFinished(true);
+        });
     });
 
-    onFirstSourceFinish(productsSourcesPromises);
     onAllSourcesFinish(productsSourcesPromises);
   }
 
@@ -86,5 +95,6 @@ export function useProductsSearchOrchestrator(
     runProductsSearch,
     products,
     isLoading,
+    errorMessage,
   };
 }

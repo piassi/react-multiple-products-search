@@ -14,6 +14,7 @@ import {
 import styles from './styles.module.scss';
 import { SearchFormData } from '../products-page/products-page';
 import { Colors } from '@/design-system/types/colors';
+import { LoadingIndicator } from '@/design-system/components/loading-indicator';
 
 type Props = {
   stickToTop: boolean;
@@ -69,7 +70,7 @@ export function SearchForm(props: Props): JSX.Element {
         </div>
 
         <Button disabled={isLoading} variant={Colors.primary}>
-          {SEARCH_BUTTON_LABEL}
+          {isLoading ? <LoadingIndicator /> : SEARCH_BUTTON_LABEL}
         </Button>
       </form>
     </div>

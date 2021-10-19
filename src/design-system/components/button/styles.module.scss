@@ -6,7 +6,10 @@
   background-color: color($dark-gray);
   border: solid 2px color($dark-gray);
   color: color($white);
-  padding: spacing($md);
+  height: 47px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   border-radius: spacing($xs);
 

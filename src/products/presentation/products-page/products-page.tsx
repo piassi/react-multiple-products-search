@@ -4,9 +4,6 @@ import styles from './styles.module.scss';
 import { ProductsList } from '../products-list';
 import { SearchForm } from '../search-form';
 import classNames from 'classnames';
-import { LoadingIndicator } from '@/design-system/components/loading-indicator';
-import { NoProductsFoundError } from '@/products/domain/errors/no-products-found';
-import { GENERIC_ERROR_MESSAGE } from './constants';
 import { useProductsSearchOrchestrator } from '../hooks/use-products-search-orchestrator';
 import { SaveSearch } from '@/products/domain/use-cases/save-search';
 
@@ -23,14 +20,14 @@ export type SearchFormData = {
 
 export function ProductsPage(props: Props): JSX.Element {
   const { productsSearch, saveSearch } = props;
-  const { runProductsSearch, products, isLoading } =
+  const { runProductsSearch, products, isLoading, errorMessage } =
     useProductsSearchOrchestrator(saveSearch, productsSearch);
+
   const [searchFormData, setSearchFormData] = useState<SearchFormData>({
     search: '',
     minPrice: '',
     maxPrice: '',
   });
-  const [errorMessage, setErrorMessage] = useState('');
 
   function updateSerchFormData(key: keyof SearchFormData, value: string): void {
     setSearchFormData({
@@ -40,24 +37,14 @@ export function ProductsPage(props: Props): JSX.Element {
   }
 
   async function handleSubmit(e: React.FormEvent): Promise<void> {
-    try {
-      e.preventDefault();
-      setErrorMessage('');
+    e.preventDefault();
 
-      const { search, minPrice, maxPrice } = searchFormData;
-
-      runProductsSearch({
-        search,
-        minPrice,
-        maxPrice,
-      });
-    } catch (error) {
-      if (error instanceof NoProductsFoundError) {
-        setErrorMessage(NoProductsFoundError.message);
-      } else {
-        setErrorMessage(GENERIC_ERROR_MESSAGE);
-      }
-    }
+    const { search, minPrice, maxPrice } = searchFormData;
+    runProductsSearch({
+      search,
+      minPrice,
+      maxPrice,
+    });
   }
 
   const hasProducts = Boolean(products.length);
@@ -87,7 +74,6 @@ export function ProductsPage(props: Props): JSX.Element {
         )}
       >
         {errorMessage && <div>{errorMessage}</div>}
-        {isLoading && <LoadingIndicator />}
         {hasProducts && <ProductsList products={products} />}
       </div>
     </div>
