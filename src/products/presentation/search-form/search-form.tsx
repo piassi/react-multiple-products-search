@@ -56,6 +56,7 @@ export function SearchForm(props: Props): JSX.Element {
             id={MIN_PRICE_INPUT_ID}
             label={MIN_PRICE_INPUT_LABEL}
             type="number"
+            min={0}
           />
         </div>
 
@@ -66,6 +67,7 @@ export function SearchForm(props: Props): JSX.Element {
             id={MAX_PRICE_INPUT_ID}
             label={MAX_PRICE_INPUT_LABEL}
             type="number"
+            min={0}
           />
         </div>
 
