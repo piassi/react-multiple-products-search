@@ -21,6 +21,7 @@ type EbayFindApiResponseItem = {
 
 type EbayFindApiResponse = {
   findItemsByKeywordsResponse: Array<{
+    ack: string[];
     searchResult: Array<{
       '@count': string;
       item?: EbayFindApiResponseItem[];
@@ -68,6 +69,13 @@ export class EbayProductsSource implements ProductsSource {
       url: ebayEndpoints.findByKeyword,
       body: this.findByKeywordBody(searchArgs),
     });
+
+    const [ebayResponseStatus] =
+      response.body.findItemsByKeywordsResponse[0].ack;
+
+    if (ebayResponseStatus !== 'Success') {
+      return [];
+    }
 
     const ebayResponse =
       response.body.findItemsByKeywordsResponse[0].searchResult[0];
