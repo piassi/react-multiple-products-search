@@ -1,4 +1,3 @@
-import { NoProductsFoundError } from '@/products/domain/errors/no-products-found';
 import { Product } from '@/products/domain/models/product';
 import {
   ProductsSearch,
@@ -9,6 +8,7 @@ import { useState } from 'react';
 import { GENERIC_ERROR_MESSAGE } from '../products-page/constants';
 
 type ProductsSearchOrchestratorResult = {
+  hasSearchFinished: boolean;
   products: Product[];
   runProductsSearch: (searchArgs: ProductsSearchArgs) => void;
   isLoading: boolean;
@@ -73,12 +73,8 @@ export function useProductsSearchOrchestrator(
             removeDuplicatedProducts(currentProducts, newProducts)
           )
         )
-        .catch((error) => {
-          if (error instanceof NoProductsFoundError) {
-            setErrorMessage(NoProductsFoundError.message);
-          } else {
-            setErrorMessage(GENERIC_ERROR_MESSAGE);
-          }
+        .catch(() => {
+          setErrorMessage(GENERIC_ERROR_MESSAGE);
           setIsLoading(false);
           setHasSearchFinished(true);
         });
@@ -92,6 +88,7 @@ export function useProductsSearchOrchestrator(
   }
 
   return {
+    hasSearchFinished,
     runProductsSearch,
     products,
     isLoading,

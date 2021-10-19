@@ -6,7 +6,6 @@ import { Product } from '../../domain/models/product';
 import { HttpPostClient } from '@/data/http';
 import { ebayEndpoints } from './endpoints';
 import xmlbuilder from 'xmlbuilder';
-import { NoProductsFoundError } from '@/products/domain/errors/no-products-found';
 
 type EbayFindApiResponseItem = {
   itemId: string[];
@@ -74,7 +73,7 @@ export class EbayProductsSearch implements ProductsSearch {
       response.body.findItemsByKeywordsResponse[0].searchResult[0];
 
     if (parseInt(ebayResponse['@count']) <= 0) {
-      throw new NoProductsFoundError();
+      return [];
     }
 
     const ebayProducts = ebayResponse.item;

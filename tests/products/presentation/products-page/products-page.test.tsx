@@ -12,8 +12,10 @@ import {
   SEARCH_BUTTON_LABEL,
   SEARCH_INPUT_LABEL,
 } from '@/products/presentation/search-form/constants';
-import { NoProductsFoundError } from '@/products/domain/errors/no-products-found';
-import { GENERIC_ERROR_MESSAGE } from '@/products/presentation/products-page/constants';
+import {
+  GENERIC_ERROR_MESSAGE,
+  NO_PRODUCTS_ERROR_MESSAGE,
+} from '@/products/presentation/products-page/constants';
 import { useProductsSearchOrchestrator } from '@/products/presentation/hooks/use-products-search-orchestrator';
 import { SaveSearch } from '@/products/domain/use-cases/save-search';
 
@@ -136,8 +138,10 @@ describe('Given products page', () => {
 
     describe('Given search has no results', () => {
       beforeEach(() => {
-        mockRunProductsSearch.mockImplementation(() => {
-          throw new NoProductsFoundError();
+        mockUseProductsSearchOrchestrator.mockReturnValue({
+          errorMessage: NO_PRODUCTS_ERROR_MESSAGE,
+          runProductsSearch: mockRunProductsSearch,
+          products: [],
         });
       });
 
@@ -149,7 +153,7 @@ describe('Given products page', () => {
 
         await waitFor(() => {
           expect(
-            screen.getByText(NoProductsFoundError.message)
+            screen.getByText(NO_PRODUCTS_ERROR_MESSAGE)
           ).toBeInTheDocument();
         });
       });
@@ -157,8 +161,10 @@ describe('Given products page', () => {
 
     describe('Given search fails unexpectedly', () => {
       beforeEach(() => {
-        mockRunProductsSearch.mockImplementation(() => {
-          throw new Error('Not Expected');
+        mockUseProductsSearchOrchestrator.mockReturnValue({
+          errorMessage: GENERIC_ERROR_MESSAGE,
+          runProductsSearch: mockRunProductsSearch,
+          products: [],
         });
       });
 

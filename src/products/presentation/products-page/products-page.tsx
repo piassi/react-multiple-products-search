@@ -6,6 +6,7 @@ import { SearchForm } from '../search-form';
 import classNames from 'classnames';
 import { useProductsSearchOrchestrator } from '../hooks/use-products-search-orchestrator';
 import { SaveSearch } from '@/products/domain/use-cases/save-search';
+import { NO_PRODUCTS_ERROR_MESSAGE } from './constants';
 
 type Props = {
   saveSearch: SaveSearch;
@@ -20,8 +21,13 @@ export type SearchFormData = {
 
 export function ProductsPage(props: Props): JSX.Element {
   const { productsSearch, saveSearch } = props;
-  const { runProductsSearch, products, isLoading, errorMessage } =
-    useProductsSearchOrchestrator(saveSearch, productsSearch);
+  const {
+    runProductsSearch,
+    products,
+    isLoading,
+    errorMessage,
+    hasSearchFinished,
+  } = useProductsSearchOrchestrator(saveSearch, productsSearch);
 
   const [searchFormData, setSearchFormData] = useState<SearchFormData>({
     search: '',
@@ -48,8 +54,11 @@ export function ProductsPage(props: Props): JSX.Element {
   }
 
   const hasProducts = Boolean(products.length);
+  const shouldDisplayNoProductsMessage = Boolean(
+    hasSearchFinished && !hasProducts && searchFormData.search
+  );
   const shouldStickSearchToTop = Boolean(
-    hasProducts || isLoading || errorMessage
+    hasProducts || isLoading || errorMessage || shouldDisplayNoProductsMessage
   );
 
   return (
@@ -75,6 +84,9 @@ export function ProductsPage(props: Props): JSX.Element {
       >
         {errorMessage && <div>{errorMessage}</div>}
         {hasProducts && <ProductsList products={products} />}
+        {shouldDisplayNoProductsMessage && (
+          <div>{NO_PRODUCTS_ERROR_MESSAGE}</div>
+        )}
       </div>
     </div>
   );
