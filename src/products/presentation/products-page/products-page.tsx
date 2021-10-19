@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ProductsSearch } from '@/products/domain/use-cases/products-search';
+import { ProductsSource } from '@/products/domain/use-cases/products-source';
 import styles from './styles.module.scss';
 import { ProductsList } from '../products-list';
 import { SearchForm } from '../search-form';
@@ -10,7 +10,7 @@ import { NO_PRODUCTS_ERROR_MESSAGE } from './constants';
 
 type Props = {
   saveSearch: SaveSearch;
-  productsSearch: ProductsSearch[];
+  productsSearch: ProductsSource[];
 };
 
 export type SearchFormData = {

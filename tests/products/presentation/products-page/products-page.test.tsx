@@ -4,7 +4,7 @@ import user from '@testing-library/user-event';
 import { mock } from 'jest-mock-extended';
 import faker from 'faker';
 import { ProductsPage } from '@/products/presentation/products-page';
-import { ProductsSearch } from '@/products/domain/use-cases/products-search';
+import { ProductsSource } from '@/products/domain/use-cases/products-source';
 import { Product } from '@/products/domain/models/product';
 import {
   MAX_PRICE_INPUT_LABEL,
@@ -45,7 +45,7 @@ describe('Given products page', () => {
     render(
       <ProductsPage
         saveSearch={mock<SaveSearch>()}
-        productsSearch={[mock<ProductsSearch>()]}
+        productsSearch={[mock<ProductsSource>()]}
       />
     );
   }

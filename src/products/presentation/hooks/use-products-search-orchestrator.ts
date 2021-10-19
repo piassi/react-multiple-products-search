@@ -1,8 +1,8 @@
 import { Product } from '@/products/domain/models/product';
 import {
-  ProductsSearch,
+  ProductsSource,
   ProductsSearchArgs,
-} from '@/products/domain/use-cases/products-search';
+} from '@/products/domain/use-cases/products-source';
 import { SaveSearch } from '@/products/domain/use-cases/save-search';
 import { useState } from 'react';
 import { GENERIC_ERROR_MESSAGE } from '../products-page/constants';
@@ -17,7 +17,7 @@ type ProductsSearchOrchestratorResult = {
 
 export function useProductsSearchOrchestrator(
   saveSearch: SaveSearch,
-  productsSources: ProductsSearch[]
+  productsSources: ProductsSource[]
 ): ProductsSearchOrchestratorResult {
   const [errorMessage, setErrorMessage] = useState('');
   const [products, setProducts] = useState<Product[]>([]);
@@ -64,7 +64,7 @@ export function useProductsSearchOrchestrator(
     const productsSourcesPromises = [];
 
     productsSources.forEach((productsSource) => {
-      const productSourcePromise = productsSource.execute(searchArgs);
+      const productSourcePromise = productsSource.search(searchArgs);
       productsSourcesPromises.push(productSourcePromise);
 
       productSourcePromise

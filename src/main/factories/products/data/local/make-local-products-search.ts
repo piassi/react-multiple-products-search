@@ -1,7 +1,7 @@
 import { LocalStorageClient } from '@/infra/local-storage-client';
-import { LocalProductsSearch } from '@/products/data/local/products-search';
-import { ProductsSearch } from '@/products/domain/use-cases/products-search';
+import { LocalProductsSource } from '@/products/data/local/products-source';
+import { ProductsSource } from '@/products/domain/use-cases/products-source';
 
-export function makeLocalProductsSearch(): ProductsSearch {
-  return new LocalProductsSearch(new LocalStorageClient());
+export function makeLocalProductsSearch(): ProductsSource {
+  return new LocalProductsSource(new LocalStorageClient());
 }

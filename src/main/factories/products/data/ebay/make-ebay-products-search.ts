@@ -1,9 +1,9 @@
 import { AxiosHttpClient } from '@/infra/axios-http-client';
-import { EbayProductsSearch } from '@/products/data/ebay/products-search';
-import { ProductsSearch } from '@/products/domain/use-cases/products-search';
+import { EbayProductsSource } from '@/products/data/ebay/products-source';
+import { ProductsSource } from '@/products/domain/use-cases/products-source';
 
-export function makeEbayProductsSearch(): ProductsSearch {
+export function makeEbayProductsSearch(): ProductsSource {
   const httpClient = new AxiosHttpClient();
 
-  return new EbayProductsSearch(httpClient);
+  return new EbayProductsSource(httpClient);
 }

@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { act } from '@testing-library/react';
 import { useProductsSearchOrchestrator } from '@/products/presentation/hooks/use-products-search-orchestrator';
 import { mock } from 'jest-mock-extended';
-import { ProductsSearch } from '@/products/domain/use-cases/products-search';
+import { ProductsSource } from '@/products/domain/use-cases/products-source';
 import { Product } from '@/products/domain/models/product';
 import faker from 'faker';
 import { waitFor } from '@testing-library/dom';
@@ -12,8 +12,8 @@ describe('Given Products Search Orchestrator', () => {
   afterEach(jest.clearAllMocks);
 
   describe('When run products search', () => {
-    const mockSourceOne = mock<ProductsSearch>();
-    const mockSourceTwo = mock<ProductsSearch>();
+    const mockSourceOne = mock<ProductsSource>();
+    const mockSourceTwo = mock<ProductsSource>();
     const mockProductOne = mock<Product>({
       name: faker.random.words(),
       price: '10',
@@ -37,12 +37,12 @@ describe('Given Products Search Orchestrator', () => {
     beforeEach(() => {
       mockSaveSearch.execute.mockResolvedValue();
 
-      mockProductsSources[0].execute.mockResolvedValue([
+      mockProductsSources[0].search.mockResolvedValue([
         mockProductOne,
         mockProductTwo,
       ]);
 
-      mockProductsSources[1].execute.mockResolvedValue([mockProductThree]);
+      mockProductsSources[1].search.mockResolvedValue([mockProductThree]);
     });
 
     test('Then it should call all productsSources with search args', async () => {
@@ -56,7 +56,7 @@ describe('Given Products Search Orchestrator', () => {
 
       await waitFor(() => {
         mockProductsSources.forEach((source) => {
-          expect(source.execute).toHaveBeenCalledWith(mockSearchArgs);
+          expect(source.search).toHaveBeenCalledWith(mockSearchArgs);
         });
       });
     });
@@ -110,12 +110,12 @@ describe('Given Products Search Orchestrator', () => {
           id: faker.datatype.uuid(),
         });
 
-        mockProductsSources[0].execute.mockResolvedValue([
+        mockProductsSources[0].search.mockResolvedValue([
           mockRepeatedProduct,
           mockProductTwo,
         ]);
 
-        mockProductsSources[1].execute.mockResolvedValue([
+        mockProductsSources[1].search.mockResolvedValue([
           { ...mockRepeatedProduct },
         ]);
 
