@@ -67,5 +67,21 @@ describe('Given Local Products Search ', () => {
         });
       });
     });
+
+    describe('Given no product is stored locally', () => {
+      beforeEach(() => {
+        mockLocalLoadResource.load.mockReturnValue(undefined);
+      });
+
+      test('Then it should return empty array', async () => {
+        const sut = new LocalProductsSource(mockLocalLoadResource);
+
+        const searchedProducts = await sut.search({
+          search: 'product',
+        });
+
+        expect(searchedProducts).toEqual([]);
+      });
+    });
   });
 });
