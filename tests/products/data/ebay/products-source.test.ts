@@ -83,7 +83,34 @@ describe('Ebay Products Search', () => {
         body: {
           findItemsByKeywordsResponse: [
             {
+              ack: ['Success'],
               searchResult: [{ '@count': '0' }],
+            },
+          ],
+        },
+      });
+    });
+
+    test('Then it should return empty array', async () => {
+      const sut = new EbayProductsSource(mockHttpPostClient);
+
+      const result = await sut.search({
+        search: 'mockSearch',
+      });
+
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('Given Ebay api return failure', () => {
+    beforeEach(() => {
+      mockHttpPostClient.post.mockResolvedValue({
+        statusCode: HttpStatusCodes.success,
+        body: {
+          findItemsByKeywordsResponse: [
+            {
+              ack: ['Failure'],
+              searchResult: [],
             },
           ],
         },
