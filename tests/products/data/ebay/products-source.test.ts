@@ -76,6 +76,31 @@ describe('Ebay Products Search', () => {
     ]);
   });
 
+  describe('Given Ebay api returns no results', () => {
+    beforeEach(() => {
+      mockHttpPostClient.post.mockResolvedValue({
+        statusCode: HttpStatusCodes.success,
+        body: {
+          findItemsByKeywordsResponse: [
+            {
+              searchResult: [{ '@count': '0' }],
+            },
+          ],
+        },
+      });
+    });
+
+    test('Then it should return empty array', async () => {
+      const sut = new EbayProductsSource(mockHttpPostClient);
+
+      const result = await sut.search({
+        search: 'mockSearch',
+      });
+
+      expect(result).toEqual([]);
+    });
+  });
+
   describe('Given min price is provided', () => {
     test('Then it should send minPrice filter on req body', async () => {
       const sut = new EbayProductsSource(mockHttpPostClient);
